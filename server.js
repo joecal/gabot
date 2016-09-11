@@ -19,7 +19,7 @@ function runBot() {
 
   var horseman  = new Horseman();
 
-  horseman
+  var horse = horseman
     .userAgent('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0')
     .viewport(1280, 720)
     .open('https://accounts.generalassemb.ly/users/sign_in')
@@ -69,14 +69,15 @@ function runBot() {
     .waitForNextPage()
     .screenshot('5_after_the_lead_page.png')              // for localhost use, comment out, or delete before deployment
     .log("Successfully loaded all pages! Resetting...")
-    .finally(function() {
-      horseman.close()
-      setTimeout(runBot, 3600000) // 3600000 = 1 hour
-      return
-    })
     .catch(function (error) {
       console.log("Caught this error: ", error)
       console.log("Reloading...")
+      setTimeout(runBot, 10000)
+      return horse.close()
+    })
+    .finally(function() {
+      horse.close()
+      setTimeout(runBot, 3600000) // 3600000 = 1 hour
       return
     });
 };

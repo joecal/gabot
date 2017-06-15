@@ -1,15 +1,23 @@
-var express   = require('express');
-var app       = express();
-var phantom   = require('phantom');
-var Horseman  = require('node-horseman');
-var email     = 'JohnDoe@gmail.com'; // <<= Replace with your email
-var password  = 'JohnDoePassword';   // <<= Replace with your password
-var profNum   = 1234;                // <<= Replace with your profile number
+const express      = require('express');
+const app          = express();
+const https        = require("https");
+const phantom      = require('phantom');
+const Horseman     = require('node-horseman');
+const Moment       = require('moment');
+const MomentRange  = require('moment-range');
+const moment       = MomentRange.extendMoment(Moment);
+const when         = moment();
+const timeInterval = [moment('05', 'HH'), moment('22', 'HH')];
+const range        = moment.range(timeInterval);
+const inRange      = when.within(range);
+const email        = 'JohnDoe@gmail.com'; // <<= Replace with your email
+const password     = 'JohnDoePassword';   // <<= Replace with your password
+const profNum      = 1234;                // <<= Replace with your profile number
 
-var server = app.listen(process.env.PORT || 3000, listen);
+const server = app.listen(process.env.PORT || 3000, listen);
 
 function listen() {
-  var port = server.address().port;
+  let port = server.address().port;
   console.log('App listening at port:' + port);
 }
 
@@ -17,14 +25,30 @@ function runBot() {
 
   console.log("Starting...");
 
-  var horseman  = new Horseman();
+  try {
+    if (inRange) {
+      console.log('Pinging myself to stay awake.')
+      setInterval( () => {
+          https.get("https://yourUsername-yourGAbotName.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
+      }, 1800000); // every 30 minutes
+    } else {
+      console.log("Pinging pingBot, then I'm going to sleep.")
+      https.get("https://yourUsername-yourGAPingBotName.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
+    }
+  }
 
-  var horse = horseman
+  catch (error) {
+    console.log("Caught this error: ", error)
+  }
+
+  let horseman  = new Horseman();
+
+  let horse = horseman
     .userAgent('Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0')
     .viewport(1280, 720)
     .open('https://accounts.generalassemb.ly/users/sign_in')
     .status()
-    .then(function (statusCode) {
+    .then(statusCode => {
       if (Number(statusCode) != 200) {
         throw "Error, statusCode: " + statusCode + " Couldn't load sign in page, trying again...";
       }
@@ -42,7 +66,7 @@ function runBot() {
     .wait(3e3)                                            // for localhost use, comment out, or delete before deployment
     .open('https://profiles.generalassemb.ly/profiles')
     .status()
-    .then(function (statusCode) {
+    .then(statusCode => {
       if (Number(statusCode) != 200) {
         throw "Error, statusCode: " + statusCode + " Couldn't load profiles page, trying again...";
       }
@@ -55,7 +79,7 @@ function runBot() {
     .wait(3e3)
     .open("https://profiles.generalassemb.ly/profiles/" + profNum + "/steps/the_lead")
     .status()
-    .then(function (statusCode) {
+    .then(statusCode => {
       if (Number(statusCode) != 200) {
         throw "Error, statusCode: " + statusCode + " Couldn't load the_lead page, trying again...";
       }
@@ -69,13 +93,13 @@ function runBot() {
     .waitForNextPage()
     .screenshot('5_after_the_lead_page.png')              // for localhost use, comment out, or delete before deployment
     .log("Successfully loaded all pages! Resetting...")
-    .catch(function (error) {
+    .catch(error => {
       console.log("Caught this error: ", error)
       console.log("Reloading...")
       setTimeout(runBot, 10000)
       return horse.close()
     })
-    .finally(function() {
+    .finally( () => {
       horse.close()
       setTimeout(runBot, 3600000) // 3600000 = 1 hour
       return

@@ -15,6 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
+    "moment": "^2.18.1",
+    "moment-range": "^3.0.3",
     "node-horseman": "^3.1.1",
     "phantom": "^2.1.21"
   }

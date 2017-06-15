@@ -4,7 +4,13 @@
 
 - To keep a GA profile on the profile listings front page for better employer visibility.
 
-## Local Installation
+## Dependencies
+
+- Git
+- Node.js version 6 (doesn't seem to work properly on version 8)
+- Nodemon (optional)
+
+## Local Installation via Terminal Command Line
 
 ```
 git clone git@github.com:joecal/gabot.git
@@ -16,12 +22,18 @@ Before running the app, make sure you change the email, password and profNum var
 
 ```javascript
 // server.js
-var email     = 'JohnDoe@gmail.com'; // <<= Replace with your email
-var password  = 'JohnDoePassword';   // <<= Replace with your password
-var profNum   = 1234;                // <<= Replace with your profile number
+const email     = 'JohnDoe@gmail.com'; // <<= Replace with your email
+const password  = 'JohnDoePassword';   // <<= Replace with your password
+const profNum   = 1234;                // <<= Replace with your profile number
 ```
 
 Now you should be ready to test the app. Run the next command.
+
+```
+node server.js
+```
+
+or
 
 ```
 nodemon server.js
@@ -42,7 +54,7 @@ Now you can check out the .png screenshot pictures to further verify the app is 
 
 You're ready to deploy!
 
-## Heroku deployment
+## Heroku deployment via Terminal Command Line
 
 Comment out, or delete all the commented lines in server.js that read:
 
@@ -50,7 +62,24 @@ Comment out, or delete all the commented lines in server.js that read:
 // for localhost use, comment out, or delete before deployment
 ```
 
-These line of code are only useful for local machine testing. No need to use them when deploying.
+These lines of code are only useful for local machine testing. No need to use them when deploying.
+
+Now check out the [GAPingBotbot](https://github.com/joecal/gapingbot "GAPingBot") repo, then un-comment and change the the URLs in the try block in the server.js file to your own heroku apps URLs.
+
+```javascript
+// server.js
+try {
+  if (inRange) {
+    console.log('Pinging myself to stay awake.')
+    setInterval( () => {
+        https.get("https://yourUsername-yourGAbotName.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
+    }, 1800000); // every 30 minutes
+  } else {
+    console.log("Pinging pingBot, then I'm going to sleep.")
+    https.get("https://yourUsername-yourGAPingBotName.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
+  }
+}
+```
 
 Now run these commands.
 
@@ -58,19 +87,16 @@ Now run these commands.
 git add .
 git commit -m "Pushing to heroku"
 heroku login
-JohnDoe@gmail.com          <<= Your heroku email
-JohnDoePassword            <<= Your heroku password
-heroku create appNameHere --buildpack heroku/nodejs
+yourEmail@email.com     
+yourPassword            
+heroku create yourGAbotName --buildpack heroku/nodejs
 git push heroku master
+heroku ps:scale web=1
 heroku logs -t
 ```
-
-If everything in the heroku logs looks ok then go to https://kaffeine.herokuapp.com/ then submit your apps name and set a time you want the app to idle/sleep. This free service pings your app every 30 minutes to prevent it from idling.
 
 Now your GA profile should stay on the front page.
 
 ## Issues
 
-- Could use more error handling and possibly send a notification if the app goes down.
-- Maybe a better pinging option to prevent idling.
 - Please let me know if you find anymore issues or have any other ideas to improve the app.

@@ -64,20 +64,22 @@ Comment out, or delete all the commented lines in server.js that read:
 
 These lines of code are only useful for local machine testing. No need to use them when deploying.
 
-Now check out the [GAPingBotbot](https://github.com/joecal/gapingbot "GAPingBot") repo, then un-comment and change the the URLs in the try block in the server.js file to your own heroku apps URLs.
+Now check out the [GAPingBot](https://github.com/joecal/gapingbot "GAPingBot") repo, then un-comment and change the the URLs in the try-catch block in the server.js file to your own heroku apps URLs, then re-deploy your GAbot.
 
 ```javascript
 // server.js
 try {
   if (inRange) {
     console.log('Pinging myself to stay awake.')
-    setInterval( () => {
-        https.get("https://yourUsername-yourGAbotName.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
-    }, 1800000); // every 30 minutes
+    https.get("https://yourGAbot.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
   } else {
     console.log("Pinging pingBot, then I'm going to sleep.")
-    https.get("https://yourUsername-yourGAPingBotName.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
+    https.get("https://yourGAPingBot.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
   }
+} catch (error) {
+  console.log("Caught this error: ", error)
+  console.log("Pinging again...")
+  setTimeout(ping, 10000) // 10000 = 10 seconds
 }
 ```
 

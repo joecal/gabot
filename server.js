@@ -1,18 +1,13 @@
-const express      = require('express');
-const app          = express();
-const https        = require("https");
-const phantom      = require('phantom');
-const Horseman     = require('node-horseman');
-const Moment       = require('moment');
-const MomentRange  = require('moment-range');
-const moment       = MomentRange.extendMoment(Moment);
-const when         = moment().utcOffset("-04:00");
-const timeInterval = [moment('07', 'HH'), moment('24:59', 'HH')];
-const range        = moment.range(timeInterval);
-const inRange      = when.within(range);
-const email        = 'JohnDoe@gmail.com'; // <<= Replace with your email
-const password     = 'JohnDoePassword';   // <<= Replace with your password
-const profNum      = 1234;                // <<= Replace with your profile number
+const express     = require('express');
+const app         = express();
+const https       = require("https");
+const phantom     = require('phantom');
+const Horseman    = require('node-horseman');
+const Moment      = require('moment');
+const MomentRange = require('moment-range');
+const email       = 'JohnDoe@gmail.com'; // <<= Replace with your email
+const password    = 'JohnDoePassword';   // <<= Replace with your password
+const profNum     = 1234;                // <<= Replace with your profile number
 
 const server = app.listen(process.env.PORT || 3000, listen);
 
@@ -22,13 +17,19 @@ function listen() {
 }
 
 function ping() {
+  let moment       = MomentRange.extendMoment(Moment);
+  let when         = moment().utcOffset("-04:00");
+  let timeInterval = [moment('07', 'HH'), moment('24:59', 'HH')];
+  let range        = moment.range(timeInterval);
+  let inRange      = when.within(range);
+
   try {
     if (inRange) {
       console.log('Pinging myself to stay awake.')
-      https.get("https://joecal-gabot.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
+      https.get("https://yourGAbot.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
     } else {
       console.log("Pinging pingBot, then I'm going to sleep.")
-      https.get("https://gapingbot.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
+      https.get("https://yourGAPingBot.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
     }
   } catch (error) {
     console.log("Caught this error: ", error)

@@ -25,10 +25,10 @@ function ping() {
   try {
     if (inRange) {
       console.log('Pinging myself to stay awake.')
-      https.get("https://yourGAbot.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
+      https.get("https://joecal-gabot.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
     } else {
       console.log("Pinging pingBot, then I'm going to sleep.")
-      https.get("https://yourGAPingBot.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
+      https.get("https://gapingbot.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
     }
   } catch (error) {
     console.log("Caught this error: ", error)
@@ -36,6 +36,8 @@ function ping() {
     setTimeout(ping, 10000) // 10000 = 10 seconds
   }
 }
+
+setInterval(ping, 1800000) // 1800000 = 30 minutes
 
 function runBot() {
 
@@ -93,13 +95,11 @@ function runBot() {
     .catch(error => {
       console.log("Caught this error: ", error)
       console.log("Reloading...")
-      setTimeout(ping, 10000)
       setTimeout(runBot, 10000)
       return horse.close()
     })
     .finally(() => {
       horse.close()
-      setTimeout(ping, 1800000) // 1800000 = 30 minutes
       setTimeout(runBot, 3600000) // 3600000 = 1 hour
       return
     });

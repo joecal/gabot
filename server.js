@@ -3,8 +3,6 @@ const app         = express();
 const https       = require("https");
 const phantom     = require('phantom');
 const Horseman    = require('node-horseman');
-const Moment      = require('moment');
-const MomentRange = require('moment-range');
 const email       = 'JohnDoe@gmail.com'; // <<= Replace with your email
 const password    = 'JohnDoePassword';   // <<= Replace with your password
 const profNum     = 1234;                // <<= Replace with your profile number
@@ -16,29 +14,9 @@ function listen() {
   console.log('App listening at port:' + port);
 }
 
-function ping() {
-  let moment       = MomentRange.extendMoment(Moment);
-  let when         = moment().utcOffset("-04:00");
-  let timeInterval = [moment('07', 'HH'), moment('24:59', 'HH')];
-  let range        = moment.range(timeInterval);
-  let inRange      = when.within(range);
-
-  try {
-    if (inRange) {
-      console.log('Pinging myself to stay awake.')
-      https.get("https://yourGAbot.herokuapp.com/"); // <<= Replace with your GAbot heroku app URL
-    } else {
-      console.log("Pinging pingBot, then I'm going to sleep.")
-      https.get("https://yourGAPingBot.herokuapp.com/"); // <<= Replace with your GAPingBot heroku app URL
-    }
-  } catch (error) {
-    console.log("Caught this error: ", error)
-    console.log("Pinging again...")
-    setTimeout(ping, 10000) // 10000 = 10 seconds
-  }
-}
-
-setInterval(ping, 1800000) // 1800000 = 30 minutes
+app.get('*',(req, res) => {
+  res.sendFile(path.join(__dirname, '/', 'wakemydyno.txt'));
+});
 
 function runBot() {
 

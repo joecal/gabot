@@ -7,8 +7,9 @@
 ## Dependencies
 
 - Git
-- Node.js version 6 (doesn't seem to work properly on version 8)
+- Node.js
 - Nodemon (optional)
+- Google Chrome
 
 ## Local Installation via Terminal Command Line
 
@@ -30,13 +31,13 @@ const profNum   = 1234;                // <<= Replace with your profile number
 Now you should be ready to test the app. Run the next command.
 
 ```
-node server.js
+node index.js
 ```
 
 or
 
 ```
-nodemon server.js
+nodemon index.js
 ```
 
 Your terminal should say:
@@ -44,10 +45,24 @@ Your terminal should say:
 ```
 Starting...
 App listening at port:3000
-Successfully loaded sign in page!
-Successfully loaded profiles page!
-Successfully loaded the_lead page!
-Successfully loaded all pages! Resetting...
+Initializing browser
+Resizing browser to fullscreen
+State changed from starting to up
+Navigating to https://accounts.generalassemb.ly/users/sign_in
+Waiting 5 seconds to give some time to all the redirects
+Taking screenshot sign_in.png
+Typing pass
+Typing email
+Taking screenshot sign_in_typing.png
+Clicking submit
+Waiting 5 seconds
+Taking screenshot signed_in.png
+Navigating to https://profiles.generalassemb.ly/profiles/profNum/steps/the_lead
+Waiting 5 seconds
+Taking screenshot profile_edit.png
+Clicking commit
+Closing browser
+Run again in one hour
 ```
 
 Now you can check out the .png screenshot pictures to further verify the app is working properly.
@@ -56,13 +71,21 @@ You're ready to deploy!
 
 ## Heroku deployment via Terminal Command Line
 
-Comment out, or delete all the commented lines in server.js that read:
+Set headless to true in index.js
+
+```javascript
+const browser = new HeadlessChrome({
+  headless: false // Set to true before deploying
+})
+```
+
+Comment out, or delete all the commented lines in index.js that read:
 
 ```javascript
 // for localhost use, comment out, or delete before deployment
 ```
 
-These lines of code are only useful for local machine testing. No need to use them when deploying.
+These are only useful for local machine testing. No need to use them when deploying.
 
 Now run these commands.
 
@@ -73,12 +96,13 @@ heroku login
 yourEmail@email.com     
 yourPassword            
 heroku create yourGAbotName --buildpack heroku/nodejs
+heroku buildpacks:add https://github.com/heroku/heroku-buildpack-google-chrome.git
 git push heroku master
 heroku ps:scale web=1
 heroku logs -t
 ```
 
-Heroku didn't seem to like the use of timers for pinging in the previous version of this, so we'll use a free pinging service instead. Go to [wakemydyno.com](http://wakemydyno.com/ "wakemydyno.com") and submit your GAbot heroku URL which should look like this: "https://yourGAbot.herokuapp.com/wakemydyno.txt". This free service pings your app every hour to prevent it from idling.
+Go to [wakemydyno.com](http://wakemydyno.com/ "wakemydyno.com") and submit your GAbot heroku URL which should look like this: "https://yourGAbot.herokuapp.com/wakemydyno.txt". This free service pings your app every hour to prevent it from idling.
 
 Now your GA profile should stay on the front page.
 
